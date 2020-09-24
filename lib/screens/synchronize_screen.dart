@@ -17,6 +17,7 @@ class _SynchronizeScreenState extends State<SynchronizeScreen> {
   @override
   void initState() {
     super.initState();
+
     socket = IO.io('http://localhost:3001', <String, dynamic>{
       'transports': ['websocket'],
     });

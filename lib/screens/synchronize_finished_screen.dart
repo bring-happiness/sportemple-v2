@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:sportemple/arguments/synchronize_finished_arguments.dart';
+
+import 'booking_home_screen.dart';
 
 class SynchronizeFinishedScreen extends StatefulWidget {
   static const String routeName = '/synchronize-data/finished';
@@ -13,6 +16,7 @@ class SynchronizeFinishedScreen extends StatefulWidget {
 
 class _SynchronizeFinishedScreenState extends State<SynchronizeFinishedScreen> {
   IO.Socket socket;
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   @override
   void initState() {
@@ -37,7 +41,7 @@ class _SynchronizeFinishedScreenState extends State<SynchronizeFinishedScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
+        onPressed: () async {
           socket.emit('save-user-infos', {
             'username': arguments.username,
             'password': arguments.password,
@@ -49,6 +53,13 @@ class _SynchronizeFinishedScreenState extends State<SynchronizeFinishedScreen> {
             'ranking': arguments.ranking,
             'partners': arguments.partners,
           });
+
+          final SharedPreferences prefs = await _prefs;
+          prefs.setString('username', arguments.username);
+          prefs.setString('password', arguments.password);
+
+          Route route = MaterialPageRoute(builder: (context) => BookingHomeScreen());
+          Navigator.of(context).pushAndRemoveUntil(route, (Route<dynamic> route) => false);
         },
         label: Text('VALIDER'),
         icon: Icon(Icons.check),
