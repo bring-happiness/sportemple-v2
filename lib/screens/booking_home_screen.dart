@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
+import './communiques_screen.dart';
 import '../models/user.dart';
 import '../repository/user_repository.dart';
 
@@ -45,8 +46,27 @@ class _BookingHomeScreenState extends State<BookingHomeScreen> {
         child: Icon(Icons.add),
       ),
       body: SafeArea(
-        child: Center(
-          child: Text(user?.age.toString())
+        child: Column(
+          children: [
+            Card(
+              child: Row(
+                children: [
+
+                ],
+              ),
+            ),
+            RaisedButton(
+              child: Text('Voir les annonces',
+              style: TextStyle(
+                fontSize: 17,
+                color: Colors.white
+              ),),
+              onPressed: () {
+                Navigator.of(context).pushNamed(CommuniquesScreen.routeName);
+              },
+              color: Theme.of(context).primaryColor,
+            )
+          ],
         ),
       ),
     );

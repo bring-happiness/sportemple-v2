@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'package:sportemple/arguments/synchronize_finished_arguments.dart';
 
-import 'booking_home_screen.dart';
+import '../arguments/synchronize_finished_arguments.dart';
+import './booking_home_screen.dart';
 
 class SynchronizeFinishedScreen extends StatefulWidget {
   static const String routeName = '/synchronize-data/finished';
