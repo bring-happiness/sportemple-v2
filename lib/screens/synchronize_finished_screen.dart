@@ -31,7 +31,7 @@ class _SynchronizeFinishedScreenState extends State<SynchronizeFinishedScreen> {
     final SynchronizeFinishedArguments arguments =
         ModalRoute.of(context).settings.arguments;
 
-    final String profileAssetName = arguments.isMale
+    final String profileAssetName = arguments.user.isMale
         ? 'assets/images/tennis-player-male.svg'
         : 'assets/images/tennis-player-female.svg';
 
@@ -43,20 +43,20 @@ class _SynchronizeFinishedScreenState extends State<SynchronizeFinishedScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           socket.emit('save-user-infos', {
-            'username': arguments.username,
-            'password': arguments.password,
-            'civility': arguments.civility,
-            'firstname': arguments.firstname,
-            'lastname': arguments.lastname,
-            'birthdate': arguments.birthdate,
-            'license': arguments.license,
-            'ranking': arguments.ranking,
-            'partners': arguments.partners,
+            'username': arguments.user.username,
+            'password': arguments.user.password,
+            'civility': arguments.user.civility,
+            'firstname': arguments.user.firstname,
+            'lastname': arguments.user.lastname,
+            'birthdate': arguments.user.birthdate,
+            'license': arguments.user.license,
+            'ranking': arguments.user.ranking,
+            'partners': arguments.user.partners,
           });
 
           final SharedPreferences prefs = await _prefs;
-          prefs.setString('username', arguments.username);
-          prefs.setString('password', arguments.password);
+          prefs.setString('username', arguments.user.username);
+          prefs.setString('password', arguments.user.password);
 
           Route route = MaterialPageRoute(builder: (context) => BookingHomeScreen());
           Navigator.of(context).pushAndRemoveUntil(route, (Route<dynamic> route) => false);
@@ -67,110 +67,94 @@ class _SynchronizeFinishedScreenState extends State<SynchronizeFinishedScreen> {
       body: SafeArea(
         bottom: false,
         child: SingleChildScrollView(
-          child: Stack(
+          child: Column(
             children: [
-              Column(
+              Padding(
+                padding: const EdgeInsets.only(top: 37.0),
+                child: Container(
+                  height: 115,
+                  child: SvgPicture.asset(profileAssetName),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(11.0),
+                child: Text(
+                  '${arguments.user.firstname} ${arguments.user.lastname}',
+                  style: TextStyle(
+                      fontSize: 23, color: Theme.of(context).primaryColor),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 37.0),
-                    child: Container(
-                      height: 115,
-                      child: SvgPicture.asset(profileAssetName),
-                    ),
+                  Text(
+                    '${arguments.user.age} ans',
+                    style: TextStyle(fontSize: 17, color: Colors.blueGrey),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(11.0),
-                    child: Text(
-                      '${arguments.firstname} ${arguments.lastname}',
-                      style: TextStyle(
-                          fontSize: 23, color: Theme.of(context).primaryColor),
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text(
-                        '${arguments.age} ans',
-                        style: TextStyle(fontSize: 17, color: Colors.blueGrey),
-                      ),
-                      Text(
-                        arguments.license,
-                        style: TextStyle(fontSize: 17, color: Colors.blueGrey),
-                      )
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(47),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Classé ',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        Container(
-                          width: 50,
-                          height: 50,
-                          child: Center(
-                            child: Text(
-                              arguments.ranking,
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 23),
-                            ),
-                          ),
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Theme.of(context).primaryColor),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 35, vertical: 0),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 7),
-                              child: Text(
-                                'Partenaires',
-                                style: TextStyle(fontSize: 17),
-                              ),
-                            ),
-                          ],
-                        ),
-                        ...arguments.partners.map((partner) {
-                          return ListTile(
-                            leading: Container(
-                              height: 45,
-                              width: 45,
-                              child: SvgPicture.asset(profileAssetName),
-                            ),
-                            title: Text(partner),
-                          );
-                        }).toList()
-                      ],
-                    ),
+                  Text(
+                    arguments.user.license,
+                    style: TextStyle(fontSize: 17, color: Colors.blueGrey),
                   )
                 ],
               ),
-              /*Positioned(
-              bottom: 0,
-              right: 0,
-              left: 0,
-              child: RaisedButton(
-                onPressed: () {
-
-                },
-                child: Text('VALIDER',
-                style: TextStyle(
-                ),),
-                color: Theme.of(context).primaryColor,
-                textColor: Colors.white,
+              Padding(
+                padding: const EdgeInsets.all(47),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Classé ',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    Container(
+                      width: 50,
+                      height: 50,
+                      child: Center(
+                        child: Text(
+                          arguments.user.ranking,
+                          style:
+                              TextStyle(color: Colors.white, fontSize: 23),
+                        ),
+                      ),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Theme.of(context).primaryColor),
+                    ),
+                  ],
+                ),
               ),
-            )*/
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 35, vertical: 0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 7),
+                          child: Text(
+                            'Partenaires',
+                            style: TextStyle(fontSize: 17),
+                          ),
+                        ),
+                      ],
+                    ),
+                    ...arguments.user.partners.map((partner) {
+                      return ListTile(
+                        leading: Container(
+                          height: 45,
+                          width: 45,
+                          child: SvgPicture.asset(profileAssetName),
+                        ),
+                        title: Text(partner),
+                      );
+                    }).toList()
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 85,
+              )
             ],
           ),
         ),

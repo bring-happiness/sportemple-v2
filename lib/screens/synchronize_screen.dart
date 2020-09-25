@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'package:sportemple/arguments/login_arguments.dart';
-import 'package:sportemple/arguments/synchronize_finished_arguments.dart';
-import 'package:sportemple/screens/synchronize_finished_screen.dart';
+
+import '../arguments/login_arguments.dart';
+import '../arguments/synchronize_finished_arguments.dart';
+import './synchronize_finished_screen.dart';
 
 class SynchronizeScreen extends StatefulWidget {
   static const String routeName = '/synchronize-data';

@@ -1,42 +1,28 @@
-import 'package:age/age.dart';
+import '../models/user.dart';
 
 class SynchronizeFinishedArguments {
-  final String username;
-  final String password;
-  final String civility;
-  final String firstname;
-  final String lastname;
-  final String birthdate;
-  final String license;
-  final String ranking;
-  final List<dynamic> partners;
+  User user;
 
   SynchronizeFinishedArguments(
-      {this.username,
-      this.password,
-      this.civility,
-      this.firstname,
-      this.lastname,
-      this.birthdate,
-      this.license,
-      this.ranking,
-      this.partners});
-
-  bool get isMale {
-    return this.civility == 'M';
-  }
-
-  DateTime get birthdateTime {
-    List<String> dateSplitted = this.birthdate.split('/');
-
-    return DateTime(int.parse(dateSplitted[2]), int.parse(dateSplitted[1]),
-        int.parse(dateSplitted[0]));
-  }
-
-  int get age {
-    AgeDuration age = Age.dateDifference(
-        fromDate: this.birthdateTime, toDate: DateTime.now());
-
-    return age.years;
+      {username,
+      password,
+      civility,
+      firstname,
+      lastname,
+      birthdate,
+      license,
+      ranking,
+      partners}) {
+    user = User(
+      username: username,
+      password: password,
+      civility: civility,
+      firstname: firstname,
+      lastname: lastname,
+      birthdate: birthdate,
+      license: license,
+      ranking: ranking,
+      partners: partners
+    );
   }
 }
