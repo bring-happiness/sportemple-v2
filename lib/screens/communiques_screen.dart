@@ -47,8 +47,11 @@ class _CommuniquesScreenState extends State<CommuniquesScreen> {
                 SizedBox(
                   height: 17,
                 ),
-                if (_communique == null || _communique.text.length < 1)
-                  Text('Aucune annonce')
+                if (_communique == null || _communique.text == null || _communique.text.length < 1)
+                  Text('Aucune annonce',
+                  style: TextStyle(
+                    fontSize: 20
+                  ),)
                 else
                   ..._communique.text
                       .asMap()
