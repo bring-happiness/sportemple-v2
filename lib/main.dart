@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sportemple/screens/communiques_screen.dart';
-import 'package:sportemple/screens/booking_home_screen.dart';
-import 'package:sportemple/screens/login_screen.dart';
-import 'package:sportemple/screens/synchronize_finished_screen.dart';
-import 'package:sportemple/screens/synchronize_screen.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
+
+import './screens/communiques_screen.dart';
+import './screens/booking_home_screen.dart';
+import './screens/login_screen.dart';
+import './screens/synchronize_finished_screen.dart';
+import './screens/synchronize_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  initializeDateFormatting('fr_FR', null).then((value) {
+    Intl.defaultLocale = 'fr_FR';
+    runApp(MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
