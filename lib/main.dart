@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:sportemple/screens/booking_calendar_screen.dart';
 
 import './screens/communiques_screen.dart';
 import './screens/booking_home_screen.dart';
@@ -28,9 +29,20 @@ class MyApp extends StatelessWidget {
       routes: {
         LoginScreen.routeName: (ctx) => LoginScreen(),
         SynchronizeScreen.routeName: (ctx) => SynchronizeScreen(),
-        SynchronizeFinishedScreen.routeName: (ctx) => SynchronizeFinishedScreen(),
+        SynchronizeFinishedScreen.routeName: (ctx) =>
+            SynchronizeFinishedScreen(),
         BookingHomeScreen.routeName: (ctx) => BookingHomeScreen(),
         CommuniquesScreen.routeName: (ctx) => CommuniquesScreen()
+      },
+      onGenerateRoute: (settings) {
+        if (settings.name == BookingCalendarScreen.routeName) {
+          return MaterialPageRoute(
+            builder: (context) => BookingCalendarScreen(),
+            fullscreenDialog: true
+          );
+        }
+
+        return null;
       },
     );
   }
@@ -48,7 +60,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),

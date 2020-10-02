@@ -5,6 +5,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skeleton_text/skeleton_text.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:sportemple/screens/booking_calendar_screen.dart';
 
 import '../models/booking.dart';
 import '../repository/booking_repository.dart';
@@ -164,6 +165,10 @@ class _BookingHomeScreenState extends State<BookingHomeScreen> {
     }
   }
 
+  void _onAddPressed(BuildContext context) {
+    Navigator.of(context).pushNamed(BookingCalendarScreen.routeName);
+  }
+
   @override
   Widget build(BuildContext context) {
     final String profileAssetName = (user != null && user.isMale)
@@ -175,7 +180,7 @@ class _BookingHomeScreenState extends State<BookingHomeScreen> {
         title: Text('C.S Clichy Tennis'),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => _onAddPressed(context),
         child: Icon(Icons.add),
       ),
       body: ModalProgressHUD(
@@ -428,7 +433,7 @@ class _BookingHomeScreenState extends State<BookingHomeScreen> {
                             child: Text(
                               'Aucune réservation',
                               style: TextStyle(
-                                  fontSize: 18, color: Colors.grey[500]),
+                                  fontSize: 18, color: Colors.grey[600]),
                             ),
                           ),
                         ],
