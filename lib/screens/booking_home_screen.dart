@@ -76,7 +76,7 @@ class _BookingHomeScreenState extends State<BookingHomeScreen> {
       isBookingEdited = true;
     });
 
-    bool success = await BookingRepository.cancelBooking(username, password, booking.id);
+    bool success = await BookingRepository.cancel(username, password, booking.id);
 
     setState(() {
       isBookingEdited = false;
@@ -104,7 +104,10 @@ class _BookingHomeScreenState extends State<BookingHomeScreen> {
                   color: Theme.of(context).primaryColor,
                 ),
               ),
-              onPressed: () => _deleteBooking(context, booking),
+              onPressed: () {
+                Scaffold.of(context).hideCurrentSnackBar();
+                _deleteBooking(context, booking);
+              },
             )
           ],
         ),

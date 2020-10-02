@@ -24,7 +24,7 @@ class BookingRepository {
     }
   }
 
-  static Future<bool> cancelBooking(username, password, bookingId) async {
+  static Future<bool> cancel(username, password, bookingId) async {
     final response = await http.post('http://localhost:3001/booking/cancel',
         body: {
           'booking_id': bookingId
