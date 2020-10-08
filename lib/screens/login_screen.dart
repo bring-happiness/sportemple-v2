@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'package:sportemple/arguments/login_arguments.dart';
+import 'package:sportemple/arguments/synchronize_arguments.dart';
 import 'package:sportemple/screens/booking_home_screen.dart';
 import 'package:sportemple/screens/synchronize_screen.dart';
 
@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
     socket.on('login-sync-infos', (_) {
       print('login-sync-infos');
       Navigator.of(context).pushNamed(SynchronizeScreen.routeName,
-          arguments: LoginArguments(
+          arguments: SynchronizeArguments(
               username: usernameInput.text, password: passwordInput.text));
     });
   }

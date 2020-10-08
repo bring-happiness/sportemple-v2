@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:sportemple/screens/booking_calendar_screen.dart';
+import 'package:sportemple/screens/choose_partner_screen.dart';
 
 import './screens/communiques_screen.dart';
 import './screens/booking_home_screen.dart';
@@ -32,7 +33,8 @@ class MyApp extends StatelessWidget {
         SynchronizeFinishedScreen.routeName: (ctx) =>
             SynchronizeFinishedScreen(),
         BookingHomeScreen.routeName: (ctx) => BookingHomeScreen(),
-        CommuniquesScreen.routeName: (ctx) => CommuniquesScreen()
+        CommuniquesScreen.routeName: (ctx) => CommuniquesScreen(),
+        ChoosePartnerScreen.routeName: (ctx) => ChoosePartnerScreen()
       },
       onGenerateRoute: (settings) {
         if (settings.name == BookingCalendarScreen.routeName) {

@@ -171,10 +171,6 @@ class _BookingHomeScreenState extends State<BookingHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final String profileAssetName = (user != null && user.isMale)
-        ? 'assets/images/tennis-player-male.svg'
-        : 'assets/images/tennis-player-female.svg';
-
     return Scaffold(
       appBar: AppBar(
         title: Text('C.S Clichy Tennis'),
@@ -251,7 +247,7 @@ class _BookingHomeScreenState extends State<BookingHomeScreen> {
                             child: Container(
                               height: 100,
                               width: 100,
-                              child: SvgPicture.asset(profileAssetName),
+                              child: user != null ? SvgPicture.asset(user.profileAssetName) : Container(),
                             ),
                           ),
                         ],

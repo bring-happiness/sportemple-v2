@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:sportemple/arguments/choose_partner_arguments.dart';
+import 'package:sportemple/repository/court_repository.dart';
+import 'package:sportemple/screens/choose_partner_screen.dart';
+import 'package:sportemple/screens/communiques_screen.dart';
 
 import '../extensions/string_extension.dart';
+import '../models/court.dart';
+import '../models/booking_slot.dart';
+import '../repository/booking_slot_repository.dart';
 
 class BookingCalendarScreen extends StatefulWidget {
   static const String routeName = '/booking/calendar';
@@ -14,10 +21,12 @@ class BookingCalendarScreen extends StatefulWidget {
 class _BookingCalendarScreenState extends State<BookingCalendarScreen> {
   IO.Socket socket;
   DateTime _currentDay;
+  List<BookingSlot> bookingSlots = List<BookingSlot>();
   final _pageController = PageController(
-    viewportFraction: 0.95,
+    viewportFraction: 0.9,
   );
   bool _isPageViewChangeProgrammatically = false;
+  List<Court> _courtsInfos = List<Court>();
 
   @override
   void initState() {
@@ -26,6 +35,19 @@ class _BookingCalendarScreenState extends State<BookingCalendarScreen> {
     DateTime todayWithHours = DateTime.now();
     _currentDay =
         DateTime(todayWithHours.year, todayWithHours.month, todayWithHours.day);
+
+    BookingSlotRepository.getAllCollapse()
+        .then((List<BookingSlot> _bookingSlots) {
+      setState(() {
+        bookingSlots = _bookingSlots;
+      });
+    });
+
+    CourtRepository.getAll().then((List<Court> courts) {
+      setState(() {
+        _courtsInfos = courts;
+      });
+    });
 
     socket = IO.io('http://localhost:3001', <String, dynamic>{
       'transports': ['websocket'],
@@ -45,8 +67,6 @@ class _BookingCalendarScreenState extends State<BookingCalendarScreen> {
   }
 
   int get differenceInDays {
-    print(_currentDay);
-    print(today);
     return _currentDay.difference(today).inDays;
   }
 
@@ -111,7 +131,7 @@ class _BookingCalendarScreenState extends State<BookingCalendarScreen> {
       ),
     );
 
-    if (datePicked == null)  {
+    if (datePicked == null) {
       return;
     }
 
@@ -120,92 +140,214 @@ class _BookingCalendarScreenState extends State<BookingCalendarScreen> {
 
       final differenceInDays = _currentDay.difference(oldCurrentDay).inDays;
       final currentPage = _pageController.page.round();
-      print(currentPage + differenceInDays);
+
       _isPageViewChangeProgrammatically = true;
       _pageController.jumpToPage(currentPage + differenceInDays);
     });
+  }
+
+  void _onCourtTapped(
+      BuildContext context, BookingSlot bookingSlot, Court court) {
+    Navigator.of(context).pushNamed(
+      ChoosePartnerScreen.routeName,
+      arguments: ChoosePartnerArguments(
+        bookingSlot: bookingSlot,
+        court: court,
+      ),
+    );
+  }
+
+  Court _getCourt(String courtId) {
+    return _courtsInfos.firstWhere((Court _court) => _court.id == courtId);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('C.S Clichy Tennis'),
+        title: Text('Choix du terrain'),
       ),
-      body: Stack(
-        children: [
-          PageView.builder(
-            controller: _pageController,
-            onPageChanged: (int page) {
-              if (_isPageViewChangeProgrammatically) {
-                _isPageViewChangeProgrammatically = false;
-                return;
-              }
+      body: SafeArea(
+        child: Stack(
+          children: [
+            PageView.builder(
+              controller: _pageController,
+              onPageChanged: (int page) {
+                if (_isPageViewChangeProgrammatically) {
+                  _isPageViewChangeProgrammatically = false;
+                  return;
+                }
 
-              if (page > _pageController.page) {
-                _incrementCurrentDay();
-              } else {
-                _decrementCurrentDay();
-              }
-            },
-            itemBuilder: (context, position) {
-              return Padding(
-                padding: const EdgeInsets.only(top: 50),
-                child: Container(
-                  child: ListView.builder(
-                    itemBuilder: (context, itemCount) => Text('Coucou'),
-                    itemCount: 200,
-                  ),
-                  height: 2000,
-                  //color: position % 2 == 0 ? Colors.pink : Colors.cyan,
-                ),
-              );
-            },
-          ),
-          Positioned(
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.chevron_left,
-                        size: 31,
-                      ),
-                      onPressed: canDecrement
-                          ? () => _decrementCurrentDay(
-                                changePageView: true,
-                              )
-                          : null,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    Container(
-                      width: 270,
-                      child: FlatButton(
-                        child: Text(
-                          currentDayHumanized,
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.blueGrey,
+                if (page > _pageController.page) {
+                  _incrementCurrentDay();
+                } else {
+                  _decrementCurrentDay();
+                }
+              },
+              itemBuilder: (context, position) {
+                final _bookingSlots = bookingSlots
+                    .where((BookingSlot _bookingSlot) =>
+                        _bookingSlot.dateTime ==
+                        today.add(Duration(days: position)))
+                    .toList();
+
+                return Padding(
+                  padding: const EdgeInsets.only(top: 50),
+                  child: Container(
+                    child: ListView.builder(
+                      itemBuilder: (context, itemCount) {
+                        final BookingSlot bookingSlot =
+                            _bookingSlots[itemCount];
+
+                        return Container(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 8, left: 8, right: 8, bottom: 21),
+                            child: Column(
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      bookingSlot.startTimeHumanized,
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                    ),
+                                    Expanded(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            bookingSlot.numberOfCourtsHumanized
+                                                .toUpperCase(),
+                                            style: TextStyle(
+                                                fontSize: 13,
+                                                color: Colors.grey[500]),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 7,
+                                ),
+                                Container(
+                                  width: double.infinity,
+                                  child: Wrap(
+                                    children: [
+                                      ...bookingSlot.courts.map((_courtId) {
+                                        final Court _court =
+                                            _getCourt(_courtId);
+
+                                        return Card(
+                                            elevation: 3,
+                                            child: InkWell(
+                                              splashColor: Theme.of(context)
+                                                  .primaryColor,
+                                              onTap: () => _onCourtTapped(
+                                                  context, bookingSlot, _court),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 7,
+                                                        horizontal: 11),
+                                                child: Column(
+                                                  children: [
+                                                    Text(
+                                                      _court.courtNumber
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                          fontSize: 20,
+                                                          color:
+                                                              Colors.blueGrey),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 7,
+                                                    ),
+                                                    Text(
+                                                      _court.site.toUpperCase(),
+                                                      style: TextStyle(
+                                                          fontSize: 12,
+                                                          color:
+                                                              Colors.grey[700]),
+                                                    ),
+                                                    Text(
+                                                      _court.condition
+                                                          .toUpperCase(),
+                                                      style: TextStyle(
+                                                          fontSize: 12,
+                                                          color:
+                                                              Colors.grey[700]),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ));
+                                      }).toList(),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        onPressed: () => _onDatePressed(context),
-                      ),
+                        );
+                      },
+                      itemCount: _bookingSlots.length,
                     ),
-                    IconButton(
-                      icon: Icon(Icons.chevron_right, size: 31),
-                      onPressed: () => _incrementCurrentDay(
-                        changePageView: true,
-                      ),
-                      color: Theme.of(context).primaryColor,
-                    )
-                  ],
-                ),
-              ],
+                    //color: position % 2 == 0 ? Colors.pink : Colors.cyan,
+                  ),
+                );
+              },
             ),
-          )
-        ],
+            Positioned(
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.chevron_left,
+                          size: 31,
+                        ),
+                        onPressed: canDecrement
+                            ? () => _decrementCurrentDay(
+                                  changePageView: true,
+                                )
+                            : null,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      Container(
+                        width: 270,
+                        child: FlatButton(
+                          child: Text(
+                            currentDayHumanized,
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.blueGrey,
+                            ),
+                          ),
+                          onPressed: () => _onDatePressed(context),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.chevron_right, size: 31),
+                        onPressed: () => _incrementCurrentDay(
+                          changePageView: true,
+                        ),
+                        color: Theme.of(context).primaryColor,
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

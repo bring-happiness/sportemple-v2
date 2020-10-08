@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-import '../arguments/login_arguments.dart';
+import '../arguments/synchronize_arguments.dart';
 import '../arguments/synchronize_finished_arguments.dart';
 import './synchronize_finished_screen.dart';
 
@@ -26,7 +26,7 @@ class _SynchronizeScreenState extends State<SynchronizeScreen> {
     socket.on('login-sync-infos-finished', (data) {
       print('login sync infos finished');
 
-      final LoginArguments arguments = ModalRoute.of(context).settings.arguments;
+      final SynchronizeArguments arguments = ModalRoute.of(context).settings.arguments;
 
       Navigator.of(context).pushNamed(SynchronizeFinishedScreen.routeName,
           arguments: SynchronizeFinishedArguments(

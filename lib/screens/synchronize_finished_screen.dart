@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:sportemple/widgets/partner_widget.dart';
 
 import '../arguments/synchronize_finished_arguments.dart';
 import './booking_home_screen.dart';
@@ -30,10 +31,6 @@ class _SynchronizeFinishedScreenState extends State<SynchronizeFinishedScreen> {
   Widget build(BuildContext context) {
     final SynchronizeFinishedArguments arguments =
         ModalRoute.of(context).settings.arguments;
-
-    final String profileAssetName = arguments.user.isMale
-        ? 'assets/images/tennis-player-male.svg'
-        : 'assets/images/tennis-player-female.svg';
 
     return Scaffold(
       appBar: AppBar(
@@ -73,7 +70,7 @@ class _SynchronizeFinishedScreenState extends State<SynchronizeFinishedScreen> {
                 padding: const EdgeInsets.only(top: 37.0),
                 child: Container(
                   height: 115,
-                  child: SvgPicture.asset(profileAssetName),
+                  child: SvgPicture.asset(arguments.user.profileAssetName),
                 ),
               ),
               Padding(
@@ -140,13 +137,9 @@ class _SynchronizeFinishedScreenState extends State<SynchronizeFinishedScreen> {
                       ],
                     ),
                     ...arguments.user.partners.map((partner) {
-                      return ListTile(
-                        leading: Container(
-                          height: 45,
-                          width: 45,
-                          child: SvgPicture.asset(profileAssetName),
-                        ),
-                        title: Text(partner),
+                      return PartnerWidget(
+                        partner: partner,
+                        profileAssetName: arguments.user.profileAssetName,
                       );
                     }).toList()
                   ],

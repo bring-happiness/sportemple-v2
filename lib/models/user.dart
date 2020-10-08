@@ -56,4 +56,10 @@ class User {
 
     return age.years;
   }
+
+  String get profileAssetName {
+    return this.isMale
+        ? 'assets/images/tennis-player-male.svg'
+        : 'assets/images/tennis-player-female.svg';
+  }
 }
