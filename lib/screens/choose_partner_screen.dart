@@ -49,6 +49,10 @@ class _ChoosePartnerScreenState extends State<ChoosePartnerScreen> {
     return _partnerSelected == partner;
   }
 
+  bool get hasPartnerSelected {
+    return _partnerSelected != null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,37 +60,40 @@ class _ChoosePartnerScreenState extends State<ChoosePartnerScreen> {
         title: Text('Choix du partenaire'),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _partnerSelected == null
-            ? null
-            : () async {
-                final ChoosePartnerArguments arguments =
-                    ModalRoute.of(context).settings.arguments;
+      floatingActionButton: Opacity(
+        opacity: hasPartnerSelected ? 1 : 0.3,
+        child: FloatingActionButton.extended(
+          onPressed: _partnerSelected == null
+              ? null
+              : () async {
+                  final ChoosePartnerArguments arguments =
+                      ModalRoute.of(context).settings.arguments;
 
-                setState(() {
-                  isBookingSlot = true;
-                });
+                  setState(() {
+                    isBookingSlot = true;
+                  });
 
-                await BookingSlotRepository.book(
-                    username,
-                    password,
-                    arguments.bookingSlot.date,
-                    arguments.bookingSlot.startTime,
-                    3600,
-                    arguments.court.id,
-                    _partnerSelected);
+                  await BookingSlotRepository.book(
+                      username,
+                      password,
+                      arguments.bookingSlot.date,
+                      arguments.bookingSlot.startTime,
+                      3600,
+                      arguments.court.id,
+                      _partnerSelected);
 
-                setState(() {
-                  isBookingSlot = false;
-                });
+                  setState(() {
+                    isBookingSlot = false;
+                  });
 
-                Route route = MaterialPageRoute(
-                    builder: (context) => BookingHomeScreen());
-                Navigator.of(context)
-                    .pushAndRemoveUntil(route, (Route<dynamic> route) => false);
-              },
-        label: Text('VALIDER'),
-        icon: Icon(Icons.check),
+                  Route route = MaterialPageRoute(
+                      builder: (context) => BookingHomeScreen());
+                  Navigator.of(context).pushAndRemoveUntil(
+                      route, (Route<dynamic> route) => false);
+                },
+          label: Text('VALIDER'),
+          icon: Icon(Icons.check),
+        ),
       ),
       body: ModalProgressHUD(
         inAsyncCall: isBookingSlot,
@@ -94,7 +101,10 @@ class _ChoosePartnerScreenState extends State<ChoosePartnerScreen> {
           builder: (_context) => SafeArea(
             child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.only(top: 17),
+                padding: const EdgeInsets.only(
+                  top: 17,
+                  bottom: 50,
+                ),
                 child: Column(
                   children: [
                     if (user != null)

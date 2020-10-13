@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:sportemple/arguments/choose_partner_arguments.dart';
@@ -49,7 +50,7 @@ class _BookingCalendarScreenState extends State<BookingCalendarScreen> {
       });
     });
 
-    socket = IO.io('http://localhost:3001', <String, dynamic>{
+    socket = IO.io(DotEnv().env['SPORTEMPLE_API'], <String, dynamic>{
       'transports': ['websocket'],
     });
 
@@ -307,7 +308,7 @@ class _BookingCalendarScreenState extends State<BookingCalendarScreen> {
               child: Column(
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
                         icon: Icon(
@@ -322,7 +323,7 @@ class _BookingCalendarScreenState extends State<BookingCalendarScreen> {
                         color: Theme.of(context).primaryColor,
                       ),
                       Container(
-                        width: 270,
+                        width: 250,
                         child: FlatButton(
                           child: Text(
                             currentDayHumanized,

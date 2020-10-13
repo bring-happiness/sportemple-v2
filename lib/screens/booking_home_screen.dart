@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -52,7 +53,7 @@ class _BookingHomeScreenState extends State<BookingHomeScreen> {
       });
     });
 
-    socket = IO.io('http://localhost:3001', <String, dynamic>{
+    socket = IO.io(DotEnv().env['SPORTEMPLE_API'], <String, dynamic>{
       'transports': ['websocket'],
     });
   }
@@ -149,7 +150,7 @@ class _BookingHomeScreenState extends State<BookingHomeScreen> {
               child: Text(
                 'Vous ne pouvez pas supprimer cette réservation car vous n\êtes pas le propriétaire',
                 style: TextStyle(
-                  fontSize: 17,
+                  fontSize: 15,
                 ),
               ),
             ),

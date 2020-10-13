@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:sportemple/screens/booking_calendar_screen.dart';
@@ -11,8 +12,9 @@ import './screens/synchronize_finished_screen.dart';
 import './screens/synchronize_screen.dart';
 
 void main() {
-  initializeDateFormatting('fr_FR', null).then((value) {
+  initializeDateFormatting('fr_FR', null).then((value) async {
     Intl.defaultLocale = 'fr_FR';
+    await DotEnv().load('.env');
     runApp(MyApp());
   });
 }

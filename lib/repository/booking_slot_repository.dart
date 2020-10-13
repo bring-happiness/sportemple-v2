@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -6,7 +7,7 @@ import '../models/booking_slot.dart';
 class BookingSlotRepository {
   static Future<List<BookingSlot>> getAllCollapse() async {
     final response = await http.get(
-        'http://localhost:3001/booking-slot/all/collapse',
+        '${DotEnv().env['SPORTEMPLE_API']}/booking-slot/all/collapse',
         headers: {'club_id': '57920066'});
 
     if (response.statusCode == 200) {
@@ -25,7 +26,7 @@ class BookingSlotRepository {
   static Future<dynamic> book(String username, String password, String date,
       String time, int duration, String court, String partner) async {
     final response =
-        await http.post('http://localhost:3001/booking/book', body: {
+        await http.post('${DotEnv().env['SPORTEMPLE_API']}/booking/book', body: {
       'date': date,
       'time': time,
       'duration': duration.toString(),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:sportemple/arguments/synchronize_arguments.dart';
@@ -33,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.of(context).pushReplacementNamed(BookingHomeScreen.routeName);
     });
 
-    socket = IO.io('http://localhost:3001', <String, dynamic>{
+    socket = IO.io(DotEnv().env['SPORTEMPLE_API'], <String, dynamic>{
       'transports': ['websocket'],
     });
 
@@ -83,6 +84,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -96,10 +99,10 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           Positioned(
-            bottom: 100,
+            bottom: 17,
             left: 30,
-            height: 300,
-            width: 350,
+            height: 225,
+            width: screenWidth * 0.8,
             child: ListView(
               children: [
                 Column(
@@ -134,10 +137,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       onSubmitted: (_) => _onSubmitted,
                     ),
                     SizedBox(
-                      height: 17,
+                      height: 7,
                     ),
                     Container(
-                      width: 350,
+                      width: screenWidth * 0.8,
                       child: RaisedButton(
                         onPressed: _onSubmitted,
                         child: Text('Connexion'),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../arguments/synchronize_arguments.dart';
@@ -19,7 +20,7 @@ class _SynchronizeScreenState extends State<SynchronizeScreen> {
   void initState() {
     super.initState();
 
-    socket = IO.io('http://localhost:3001', <String, dynamic>{
+    socket = IO.io(DotEnv().env['SPORTEMPLE_API'], <String, dynamic>{
       'transports': ['websocket'],
     });
 
