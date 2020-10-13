@@ -1,9 +1,9 @@
-import '../models/user.dart';
+import '../../user/models/user.dart';
 
-class SynchronizeFinishedArguments {
+class SynchronizeUserFinishedArguments {
   User user;
 
-  SynchronizeFinishedArguments(
+  SynchronizeUserFinishedArguments(
       {username,
       password,
       civility,

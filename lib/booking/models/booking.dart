@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 
-import '../extensions/string_extension.dart';
+import '../../_extensions/string_extension.dart';
 
 class Booking {
   final String id;

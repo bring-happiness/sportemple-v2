@@ -1,5 +1,3 @@
-import 'court.dart';
-
 class BookingSlot {
   final String label;
   final List<dynamic> courts;

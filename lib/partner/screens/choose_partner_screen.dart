@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../repository/booking_slot_repository.dart';
+import '../../booking/repository/booking_slot_repository.dart';
 import '../arguments/choose_partner_arguments.dart';
 import '../widgets/partner_widget.dart';
-import '../models/user.dart';
-import '../repository/user_repository.dart';
-import 'booking_home_screen.dart';
+import '../../user/models/user.dart';
+import '../../user/repository/user_repository.dart';
+import '../../booking/screens/booking_home_screen.dart';
 
 class ChoosePartnerScreen extends StatefulWidget {
   static const String routeName = '/partners/choose';

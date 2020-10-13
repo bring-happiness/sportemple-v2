@@ -6,13 +6,13 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skeleton_text/skeleton_text.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'package:sportemple/screens/booking_calendar_screen.dart';
+import 'package:sportemple/booking/screens/booking_calendar_screen.dart';
 
 import '../models/booking.dart';
 import '../repository/booking_repository.dart';
-import './communiques_screen.dart';
-import '../models/user.dart';
-import '../repository/user_repository.dart';
+import '../../communique/screens/communiques_screen.dart';
+import '../../user/models/user.dart';
+import '../../user/repository/user_repository.dart';
 
 class BookingHomeScreen extends StatefulWidget {
   static const String routeName = '/booking/home';

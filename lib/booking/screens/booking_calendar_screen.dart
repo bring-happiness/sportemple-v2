@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'package:sportemple/arguments/choose_partner_arguments.dart';
-import 'package:sportemple/repository/court_repository.dart';
-import 'package:sportemple/screens/choose_partner_screen.dart';
-import 'package:sportemple/screens/communiques_screen.dart';
+import 'package:sportemple/partner/arguments/choose_partner_arguments.dart';
+import 'package:sportemple/court/repository/court_repository.dart';
+import 'package:sportemple/partner/screens/choose_partner_screen.dart';
 
-import '../extensions/string_extension.dart';
-import '../models/court.dart';
+import '../../_extensions/string_extension.dart';
+import '../../court/models/court.dart';
 import '../models/booking_slot.dart';
 import '../repository/booking_slot_repository.dart';
 
@@ -37,8 +36,7 @@ class _BookingCalendarScreenState extends State<BookingCalendarScreen> {
     _currentDay =
         DateTime(todayWithHours.year, todayWithHours.month, todayWithHours.day);
 
-    BookingSlotRepository.getAllCollapse()
-        .then((List<BookingSlot> _bookingSlots) {
+    BookingSlotRepository.getAllCollapse().then((List<BookingSlot> _bookingSlots) {
       setState(() {
         bookingSlots = _bookingSlots;
       });

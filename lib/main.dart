@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:sportemple/screens/booking_calendar_screen.dart';
-import 'package:sportemple/screens/choose_partner_screen.dart';
+import 'package:sportemple/booking/screens/booking_calendar_screen.dart';
+import 'package:sportemple/partner/screens/choose_partner_screen.dart';
 
-import './screens/communiques_screen.dart';
-import './screens/booking_home_screen.dart';
-import './screens/login_screen.dart';
-import './screens/synchronize_finished_screen.dart';
-import './screens/synchronize_screen.dart';
+import 'communique/screens/communiques_screen.dart';
+import 'booking/screens/booking_home_screen.dart';
+import 'login/screens/login_screen.dart';
+import 'user/screens/synchronize_user_finished_screen.dart';
+import './user/screens/synchronize_user_screen.dart';
 
 void main() {
   initializeDateFormatting('fr_FR', null).then((value) async {
@@ -31,9 +31,9 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         LoginScreen.routeName: (ctx) => LoginScreen(),
-        SynchronizeScreen.routeName: (ctx) => SynchronizeScreen(),
-        SynchronizeFinishedScreen.routeName: (ctx) =>
-            SynchronizeFinishedScreen(),
+        SynchronizeUserScreen.routeName: (ctx) => SynchronizeUserScreen(),
+        SynchronizeUserFinishedScreen.routeName: (ctx) =>
+            SynchronizeUserFinishedScreen(),
         BookingHomeScreen.routeName: (ctx) => BookingHomeScreen(),
         CommuniquesScreen.routeName: (ctx) => CommuniquesScreen(),
         ChoosePartnerScreen.routeName: (ctx) => ChoosePartnerScreen()

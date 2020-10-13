@@ -1,5 +1,5 @@
-import '../models/booking_slot.dart';
-import '../models/court.dart';
+import '../../booking/models/booking_slot.dart';
+import '../../court/models/court.dart';
 
 class ChoosePartnerArguments {
   final BookingSlot bookingSlot;

@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-import '../arguments/synchronize_arguments.dart';
-import '../arguments/synchronize_finished_arguments.dart';
-import './synchronize_finished_screen.dart';
+import '../arguments/synchronize_user_arguments.dart';
+import '../arguments/synchronize_user_finished_arguments.dart';
+import '../../user/screens/synchronize_user_finished_screen.dart';
 
-class SynchronizeScreen extends StatefulWidget {
-  static const String routeName = '/synchronize-data';
+class SynchronizeUserScreen extends StatefulWidget {
+  static const String routeName = '/synchronize-user';
 
   @override
-  _SynchronizeScreenState createState() => _SynchronizeScreenState();
+  _SynchronizeUserScreenState createState() => _SynchronizeUserScreenState();
 }
 
-class _SynchronizeScreenState extends State<SynchronizeScreen> {
+class _SynchronizeUserScreenState extends State<SynchronizeUserScreen> {
   IO.Socket socket;
 
   @override
@@ -27,10 +27,10 @@ class _SynchronizeScreenState extends State<SynchronizeScreen> {
     socket.on('login-sync-infos-finished', (data) {
       print('login sync infos finished');
 
-      final SynchronizeArguments arguments = ModalRoute.of(context).settings.arguments;
+      final SynchronizeUserArguments arguments = ModalRoute.of(context).settings.arguments;
 
-      Navigator.of(context).pushNamed(SynchronizeFinishedScreen.routeName,
-          arguments: SynchronizeFinishedArguments(
+      Navigator.of(context).pushReplacementNamed(SynchronizeUserFinishedScreen.routeName,
+          arguments: SynchronizeUserFinishedArguments(
             username: arguments.username,
             password: arguments.password,
             civility: data['civility'],
@@ -48,20 +48,20 @@ class _SynchronizeScreenState extends State<SynchronizeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('C.S Clichy Tennis'),
+        title: const Text('C.S Clichy Tennis'),
       ),
       body: SafeArea(
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Padding(
+              const Padding(
                 padding: const EdgeInsets.all(27.0),
-                child: CircularProgressIndicator(),
+                child: const CircularProgressIndicator(),
               ),
-              Text(
+              const Text(
                 'Récupération des données en cours...',
-                style: TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 20),
               ),
             ],
           ),

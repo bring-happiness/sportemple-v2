@@ -3,63 +3,68 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'package:sportemple/widgets/partner_widget.dart';
 
-import '../arguments/synchronize_finished_arguments.dart';
-import './booking_home_screen.dart';
+import '../arguments/synchronize_user_finished_arguments.dart';
+import '../../booking/screens/booking_home_screen.dart';
+import '../../partner/widgets/partner_widget.dart';
+import '../widgets/user_ranking.dart';
 
-class SynchronizeFinishedScreen extends StatefulWidget {
-  static const String routeName = '/synchronize-data/finished';
+class SynchronizeUserFinishedScreen extends StatefulWidget {
+  static const String routeName = '/synchronize/finished';
 
   @override
-  _SynchronizeFinishedScreenState createState() =>
-      _SynchronizeFinishedScreenState();
+  _SynchronizeUserFinishedScreenState createState() =>
+      _SynchronizeUserFinishedScreenState();
 }
 
-class _SynchronizeFinishedScreenState extends State<SynchronizeFinishedScreen> {
-  IO.Socket socket;
+class _SynchronizeUserFinishedScreenState
+    extends State<SynchronizeUserFinishedScreen> {
+  IO.Socket _socket;
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   @override
   void initState() {
     super.initState();
-    socket = IO.io(DotEnv().env['SPORTEMPLE_API'], <String, dynamic>{
+    _socket = IO.io(DotEnv().env['SPORTEMPLE_API'], <String, dynamic>{
       'transports': ['websocket'],
     });
   }
 
+  void _onValidatePressed(arguments) async {
+    _socket.emit('save-user-infos', {
+      'username': arguments.user.username,
+      'password': arguments.user.password,
+      'civility': arguments.user.civility,
+      'firstname': arguments.user.firstname,
+      'lastname': arguments.user.lastname,
+      'birthdate': arguments.user.birthdate,
+      'license': arguments.user.license,
+      'ranking': arguments.user.ranking,
+      'partners': arguments.user.partners,
+    });
+
+    final SharedPreferences prefs = await _prefs;
+    prefs.setString('username', arguments.user.username);
+    prefs.setString('password', arguments.user.password);
+
+    Route route = MaterialPageRoute(builder: (context) => BookingHomeScreen());
+    Navigator.of(context)
+        .pushAndRemoveUntil(route, (Route<dynamic> route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final SynchronizeFinishedArguments arguments =
+    final SynchronizeUserFinishedArguments arguments =
         ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('C.S Clichy Tennis'),
+        title: const Text('C.S Clichy Tennis'),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          socket.emit('save-user-infos', {
-            'username': arguments.user.username,
-            'password': arguments.user.password,
-            'civility': arguments.user.civility,
-            'firstname': arguments.user.firstname,
-            'lastname': arguments.user.lastname,
-            'birthdate': arguments.user.birthdate,
-            'license': arguments.user.license,
-            'ranking': arguments.user.ranking,
-            'partners': arguments.user.partners,
-          });
-
-          final SharedPreferences prefs = await _prefs;
-          prefs.setString('username', arguments.user.username);
-          prefs.setString('password', arguments.user.password);
-
-          Route route = MaterialPageRoute(builder: (context) => BookingHomeScreen());
-          Navigator.of(context).pushAndRemoveUntil(route, (Route<dynamic> route) => false);
-        },
-        label: Text('VALIDER'),
+        onPressed: () => _onValidatePressed(arguments),
+        label: const Text('VALIDER'),
         icon: Icon(Icons.check),
       ),
       body: SafeArea(
@@ -87,11 +92,13 @@ class _SynchronizeFinishedScreenState extends State<SynchronizeFinishedScreen> {
                 children: [
                   Text(
                     '${arguments.user.age} ans',
-                    style: TextStyle(fontSize: 17, color: Colors.blueGrey),
+                    style:
+                        const TextStyle(fontSize: 17, color: Colors.blueGrey),
                   ),
                   Text(
                     arguments.user.license,
-                    style: TextStyle(fontSize: 17, color: Colors.blueGrey),
+                    style:
+                        const TextStyle(fontSize: 17, color: Colors.blueGrey),
                   )
                 ],
               ),
@@ -100,23 +107,12 @@ class _SynchronizeFinishedScreenState extends State<SynchronizeFinishedScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    const Text(
                       'Classé ',
-                      style: TextStyle(fontSize: 20),
+                      style: const TextStyle(fontSize: 20),
                     ),
-                    Container(
-                      width: 50,
-                      height: 50,
-                      child: Center(
-                        child: Text(
-                          arguments.user.ranking,
-                          style:
-                              TextStyle(color: Colors.white, fontSize: 23),
-                        ),
-                      ),
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Theme.of(context).primaryColor),
+                    UserRanking(
+                      ranking: arguments.user.ranking,
                     ),
                   ],
                 ),
@@ -130,9 +126,9 @@ class _SynchronizeFinishedScreenState extends State<SynchronizeFinishedScreen> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(bottom: 7),
-                          child: Text(
+                          child: const Text(
                             'Partenaires',
-                            style: TextStyle(fontSize: 17),
+                            style: const TextStyle(fontSize: 17),
                           ),
                         ),
                       ],
@@ -146,7 +142,7 @@ class _SynchronizeFinishedScreenState extends State<SynchronizeFinishedScreen> {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 85,
               )
             ],

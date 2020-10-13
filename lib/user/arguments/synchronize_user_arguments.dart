@@ -1,8 +1,8 @@
-class SynchronizeArguments {
+class SynchronizeUserArguments {
   final String username;
   final String password;
 
-  SynchronizeArguments(
+  SynchronizeUserArguments(
       {this.username,
       this.password});
 }
