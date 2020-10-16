@@ -22,7 +22,7 @@ class CommuniqueWidget extends StatelessWidget {
           decoration: BoxDecoration(
               shape: BoxShape.circle, color: Theme.of(context).primaryColor),
         ),
-        SizedBox(
+        const SizedBox(
           height: 7,
         ),
         Text(

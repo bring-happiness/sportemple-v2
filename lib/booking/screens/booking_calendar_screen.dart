@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'package:sportemple/partner/arguments/choose_partner_arguments.dart';
-import 'package:sportemple/court/repository/court_repository.dart';
-import 'package:sportemple/partner/screens/choose_partner_screen.dart';
 
 import '../../_extensions/string_extension.dart';
 import '../../court/models/court.dart';
 import '../models/booking_slot.dart';
 import '../repository/booking_slot_repository.dart';
+import '../../user/arguments/choose_user_arguments.dart';
+import '../../court/repository/court_repository.dart';
+import '../../user/screens/choose_user_screen.dart';
+import '../widgets/booking_slot_widget.dart';
 
 class BookingCalendarScreen extends StatefulWidget {
   static const String routeName = '/booking/calendar';
@@ -19,12 +20,10 @@ class BookingCalendarScreen extends StatefulWidget {
 }
 
 class _BookingCalendarScreenState extends State<BookingCalendarScreen> {
-  IO.Socket socket;
+  IO.Socket _socket;
   DateTime _currentDay;
   List<BookingSlot> bookingSlots = List<BookingSlot>();
-  final _pageController = PageController(
-    viewportFraction: 0.9,
-  );
+  final _pageController = PageController();
   bool _isPageViewChangeProgrammatically = false;
   List<Court> _courtsInfos = List<Court>();
 
@@ -36,7 +35,8 @@ class _BookingCalendarScreenState extends State<BookingCalendarScreen> {
     _currentDay =
         DateTime(todayWithHours.year, todayWithHours.month, todayWithHours.day);
 
-    BookingSlotRepository.getAllCollapse().then((List<BookingSlot> _bookingSlots) {
+    BookingSlotRepository.getAllCollapse()
+        .then((List<BookingSlot> _bookingSlots) {
       setState(() {
         bookingSlots = _bookingSlots;
       });
@@ -48,7 +48,7 @@ class _BookingCalendarScreenState extends State<BookingCalendarScreen> {
       });
     });
 
-    socket = IO.io(DotEnv().env['SPORTEMPLE_API'], <String, dynamic>{
+    _socket = IO.io(DotEnv().env['SPORTEMPLE_API'], <String, dynamic>{
       'transports': ['websocket'],
     });
 
@@ -102,7 +102,7 @@ class _BookingCalendarScreenState extends State<BookingCalendarScreen> {
       if (changePageView) {
         _isPageViewChangeProgrammatically = true;
         _pageController.previousPage(
-            duration: Duration(milliseconds: 200), curve: Curves.ease);
+            duration: Duration(milliseconds: 400), curve: Curves.ease);
       }
     });
   }
@@ -114,7 +114,7 @@ class _BookingCalendarScreenState extends State<BookingCalendarScreen> {
       if (changePageView) {
         _isPageViewChangeProgrammatically = true;
         _pageController.nextPage(
-            duration: Duration(milliseconds: 200), curve: Curves.ease);
+            duration: Duration(milliseconds: 400), curve: Curves.ease);
       }
     });
   }
@@ -148,8 +148,8 @@ class _BookingCalendarScreenState extends State<BookingCalendarScreen> {
   void _onCourtTapped(
       BuildContext context, BookingSlot bookingSlot, Court court) {
     Navigator.of(context).pushNamed(
-      ChoosePartnerScreen.routeName,
-      arguments: ChoosePartnerArguments(
+      ChooseUserScreen.routeName,
+      arguments: ChooseUserArguments(
         bookingSlot: bookingSlot,
         court: court,
       ),
@@ -164,9 +164,10 @@ class _BookingCalendarScreenState extends State<BookingCalendarScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Choix du terrain'),
+        title: const Text('Choix du terrain'),
       ),
       body: SafeArea(
+        bottom: false,
         child: Stack(
           children: [
             PageView.builder(
@@ -190,115 +191,75 @@ class _BookingCalendarScreenState extends State<BookingCalendarScreen> {
                         today.add(Duration(days: position)))
                     .toList();
 
-                return Padding(
-                  padding: const EdgeInsets.only(top: 50),
-                  child: Container(
-                    child: ListView.builder(
-                      itemBuilder: (context, itemCount) {
-                        final BookingSlot bookingSlot =
-                            _bookingSlots[itemCount];
+                return Container(
+                  padding: const EdgeInsets.only(
+                    top: 50,
+                    left: 17,
+                    right: 17,
+                  ),
+                  child: ListView.builder(
+                    itemBuilder: (context, itemCount) {
+                      final BookingSlot bookingSlot =
+                          _bookingSlots[itemCount];
 
-                        return Container(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 8, left: 8, right: 8, bottom: 21),
-                            child: Column(
+                      return Container(
+                        padding: const EdgeInsets.only(
+                          top: 8,
+                          bottom: 21,
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      bookingSlot.startTimeHumanized,
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          color:
-                                              Theme.of(context).primaryColor),
-                                    ),
-                                    Expanded(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            bookingSlot.numberOfCourtsHumanized
-                                                .toUpperCase(),
-                                            style: TextStyle(
-                                                fontSize: 13,
-                                                color: Colors.grey[500]),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                                Text(
+                                  bookingSlot.startTimeHumanized,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Theme.of(context).primaryColor),
                                 ),
-                                SizedBox(
-                                  height: 7,
-                                ),
-                                Container(
-                                  width: double.infinity,
-                                  child: Wrap(
+                                Expanded(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.center,
                                     children: [
-                                      ...bookingSlot.courts.map((_courtId) {
-                                        final Court _court =
-                                            _getCourt(_courtId);
-
-                                        return Card(
-                                            elevation: 3,
-                                            child: InkWell(
-                                              splashColor: Theme.of(context)
-                                                  .primaryColor,
-                                              onTap: () => _onCourtTapped(
-                                                  context, bookingSlot, _court),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 7,
-                                                        horizontal: 11),
-                                                child: Column(
-                                                  children: [
-                                                    Text(
-                                                      _court.courtNumber
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          color:
-                                                              Colors.blueGrey),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 7,
-                                                    ),
-                                                    Text(
-                                                      _court.site.toUpperCase(),
-                                                      style: TextStyle(
-                                                          fontSize: 12,
-                                                          color:
-                                                              Colors.grey[700]),
-                                                    ),
-                                                    Text(
-                                                      _court.condition
-                                                          .toUpperCase(),
-                                                      style: TextStyle(
-                                                          fontSize: 12,
-                                                          color:
-                                                              Colors.grey[700]),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ));
-                                      }).toList(),
+                                      Text(
+                                        bookingSlot.numberOfCourtsHumanized
+                                            .toUpperCase(),
+                                        style: TextStyle(
+                                            fontSize: 13,
+                                            color: Colors.grey[500]),
+                                      ),
                                     ],
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                        );
-                      },
-                      itemCount: _bookingSlots.length,
-                    ),
-                    //color: position % 2 == 0 ? Colors.pink : Colors.cyan,
+                            const SizedBox(
+                              height: 7,
+                            ),
+                            Container(
+                              width: double.infinity,
+                              child: Wrap(
+                                children: [
+                                  ...bookingSlot.courts.map((_courtId) {
+                                    final Court _court = _getCourt(_courtId);
+
+                                    return BookingSlotWidget(
+                                      court: _court,
+                                      onCourtTapped: () => _onCourtTapped(context, bookingSlot, _court),
+                                    );
+                                  }).toList(),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    itemCount: _bookingSlots.length,
                   ),
+                  //color: position % 2 == 0 ? Colors.pink : Colors.cyan,
                 );
               },
             ),
@@ -320,9 +281,9 @@ class _BookingCalendarScreenState extends State<BookingCalendarScreen> {
                             : null,
                         color: Theme.of(context).primaryColor,
                       ),
-                      Container(
-                        width: 250,
+                      Expanded(
                         child: FlatButton(
+                          splashColor: Theme.of(context).primaryColor,
                           child: Text(
                             currentDayHumanized,
                             style: TextStyle(

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 
-class UserRanking extends StatelessWidget {
+class UserRankingWidget extends StatelessWidget {
   final String ranking;
 
-  const UserRanking({this.ranking});
+  const UserRankingWidget({this.ranking});
+
+  String get _ranking {
+    return ranking != null ? ranking : ' ';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +19,7 @@ class UserRanking extends StatelessWidget {
         child: Center(
           child: FittedBox(
             child: Text(
-              this.ranking,
+              this._ranking,
               style:
               const TextStyle(color: Colors.white, fontSize: 23),
             ),

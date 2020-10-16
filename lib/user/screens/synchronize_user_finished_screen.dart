@@ -6,8 +6,8 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../arguments/synchronize_user_finished_arguments.dart';
 import '../../booking/screens/booking_home_screen.dart';
-import '../../partner/widgets/partner_widget.dart';
-import '../widgets/user_ranking.dart';
+import '../widgets/user_list_item_widget.dart';
+import '../widgets/user_ranking_widget.dart';
 
 class SynchronizeUserFinishedScreen extends StatefulWidget {
   static const String routeName = '/synchronize/finished';
@@ -62,10 +62,13 @@ class _SynchronizeUserFinishedScreenState
         title: const Text('C.S Clichy Tennis'),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _onValidatePressed(arguments),
-        label: const Text('VALIDER'),
-        icon: Icon(Icons.check),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 7),
+        child: FloatingActionButton.extended(
+          onPressed: () => _onValidatePressed(arguments),
+          label: const Text('VALIDER'),
+          icon: Icon(Icons.check),
+        ),
       ),
       body: SafeArea(
         bottom: false,
@@ -111,7 +114,7 @@ class _SynchronizeUserFinishedScreenState
                       'Classé ',
                       style: const TextStyle(fontSize: 20),
                     ),
-                    UserRanking(
+                    UserRankingWidget(
                       ranking: arguments.user.ranking,
                     ),
                   ],
@@ -134,7 +137,7 @@ class _SynchronizeUserFinishedScreenState
                       ],
                     ),
                     ...arguments.user.partners.map((partner) {
-                      return PartnerWidget(
+                      return UserListItemWidget(
                         partner: partner,
                         profileAssetName: arguments.user.profileAssetName,
                       );

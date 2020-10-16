@@ -104,65 +104,64 @@ class _LoginScreenState extends State<LoginScreen> {
       body: ModalProgressHUD(
         inAsyncCall: _isConnecting,
         child: Container(
+          width: double.infinity,
+          height: double.infinity,
           decoration: const BoxDecoration(
             image: const DecorationImage(
                 image: const AssetImage('assets/images/tennis-jungle.jpg'),
                 fit: BoxFit.cover),
           ),
           child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 17),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    width: screenWidth * 0.8,
-                    child: TextField(
-                      controller: _usernameInput,
-                      decoration: const InputDecoration(
-                        hintText: 'Identifiant ADSL',
-                        helperText: '6 caractères. Ex: "aldupo"',
-                        helperStyle:
-                            const TextStyle(color: Colors.white, fontSize: 14),
-                        fillColor: Colors.white,
-                        filled: true,
-                      ),
-                      onSubmitted: (_) => _onSubmitted,
-                    ),
-                  ),
-                  Container(
-                    // A tricks to have full width
-                    height: 7,
-                    width: screenWidth,
-                  ),
-                  Container(
-                    width: screenWidth * 0.8,
-                    child: TextField(
-                      controller: _passwordInput,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                          hintText: 'Mot de passe',
-                          helperStyle: const TextStyle(
-                              color: Colors.white, fontSize: 14),
+            child: Container(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 17),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: screenWidth * 0.8,
+                      child: TextField(
+                        controller: _usernameInput,
+                        decoration: const InputDecoration(
+                          hintText: 'Identifiant ADSL',
+                          helperText: '6 caractères. Ex: "aldupo"',
+                          helperStyle:
+                              const TextStyle(color: Colors.white, fontSize: 14),
                           fillColor: Colors.white,
-                          filled: true),
-                      onSubmitted: (_) => _onSubmitted,
+                          filled: true,
+                        ),
+                        onSubmitted: (_) => _onSubmitted,
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 7,
-                  ),
-                  Container(
-                    width: screenWidth * 0.8,
-                    child: RaisedButton(
-                      onPressed: _onSubmitted,
-                      child: const Text('Connexion'),
-                      color: Theme.of(context).primaryColor,
-                      textColor: Colors.white,
+                    Container(
+                      width: screenWidth * 0.8,
+                      child: TextField(
+                        controller: _passwordInput,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                            hintText: 'Mot de passe',
+                            helperStyle: const TextStyle(
+                                color: Colors.white, fontSize: 14),
+                            fillColor: Colors.white,
+                            filled: true),
+                        onSubmitted: (_) => _onSubmitted,
+                      ),
                     ),
-                  )
-                ],
+                    const SizedBox(
+                      height: 7,
+                    ),
+                    Container(
+                      width: screenWidth * 0.8,
+                      child: RaisedButton(
+                        onPressed: _onSubmitted,
+                        child: const Text('Connexion'),
+                        color: Theme.of(context).primaryColor,
+                        textColor: Colors.white,
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ),

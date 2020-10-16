@@ -64,7 +64,7 @@ class Booking {
   }
 
   String get hourHumanized {
-    String HOUR_SEPARATOR = 'h';
+    const String HOUR_SEPARATOR = 'h';
     String hour = this.hour.replaceFirst(':', HOUR_SEPARATOR);
     int hourIncremented = int.parse(hour.split(HOUR_SEPARATOR)[0]) + 1;
     String nextHour = hourIncremented.toString() + HOUR_SEPARATOR + hour.split(HOUR_SEPARATOR)[1];

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-class PartnerWidget extends StatelessWidget {
+class UserListItemWidget extends StatelessWidget {
   final String partner;
   final String profileAssetName;
 
-  const PartnerWidget({Key key, this.partner, this.profileAssetName}) : super(key: key);
+  const UserListItemWidget({Key key, this.partner, this.profileAssetName}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

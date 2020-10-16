@@ -1,11 +1,11 @@
 import '../../booking/models/booking_slot.dart';
 import '../../court/models/court.dart';
 
-class ChoosePartnerArguments {
+class ChooseUserArguments {
   final BookingSlot bookingSlot;
   final Court court;
 
-  ChoosePartnerArguments(
+  ChooseUserArguments(
       {this.bookingSlot,
       this.court});
 }

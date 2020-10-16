@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import '../repository/communique_repository.dart';
 import '../widgets/communique_widget.dart';
 import '../models/communique.dart';
+import '../skeletons/communique_skeleton.dart';
 
 class CommuniquesScreen extends StatefulWidget {
   static const String routeName = '/communiques';
@@ -14,6 +15,7 @@ class CommuniquesScreen extends StatefulWidget {
 
 class _CommuniquesScreenState extends State<CommuniquesScreen> {
   Communique _communique;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -22,6 +24,7 @@ class _CommuniquesScreenState extends State<CommuniquesScreen> {
     CommuniqueRepository.getByClubId('57920066').then((Communique communique) {
       setState(() {
         _communique = communique;
+        _isLoading = false;
       });
     });
   }
@@ -32,7 +35,7 @@ class _CommuniquesScreenState extends State<CommuniquesScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Annonces du club'),
+        title: const Text('Annonces du club'),
       ),
       body: SafeArea(
         child: Center(
@@ -42,30 +45,29 @@ class _CommuniquesScreenState extends State<CommuniquesScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    '',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  SizedBox(
-                    height: 17,
-                  ),
-                  if (_communique == null || _communique.text == null || _communique.text.length < 1)
+                  if (_isLoading)
+                    CommuniqueSkeleton(
+                      width: cWidth,
+                    )
+                  else if (_communique == null ||
+                      _communique.text == null ||
+                      _communique.text.length < 1)
                     Column(
                       children: [
                         Padding(
-                          padding: EdgeInsets.symmetric(vertical: 17),
+                          padding: const EdgeInsets.symmetric(vertical: 17),
                           child: Container(
                             height: 240,
                             width: 240,
-                            child: SvgPicture.asset(
-                                'assets/images/no-data.svg'),
+                            child:
+                                SvgPicture.asset('assets/images/no-data.svg'),
                           ),
                         ),
-                        Text('Aucune annonce',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.grey[600]
-                        ),),
+                        Text(
+                          'Aucune annonce',
+                          style:
+                              TextStyle(fontSize: 20, color: Colors.grey[600]),
+                        ),
                       ],
                     )
                   else
