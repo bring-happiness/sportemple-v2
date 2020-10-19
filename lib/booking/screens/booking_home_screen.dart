@@ -178,7 +178,7 @@ class _BookingHomeScreenState extends State<BookingHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('C.S Clichy Tennis'),
+        title: const Text('Clichy Tennis'),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _onAddPressed(context),

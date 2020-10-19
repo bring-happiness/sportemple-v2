@@ -24,14 +24,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Clichy Tennis',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       routes: {
         LoginScreen.routeName: (ctx) => LoginScreen(),
-        SynchronizeUserScreen.routeName: (ctx) => SynchronizeUserScreen(),
+        SynchronizeUserScreen.routeName: (ctx) => SynchronizeUserScreen(
+          arguments: ModalRoute.of(ctx).settings.arguments,
+        ),
         SynchronizeUserFinishedScreen.routeName: (ctx) =>
             SynchronizeUserFinishedScreen(),
         BookingHomeScreen.routeName: (ctx) => BookingHomeScreen(),

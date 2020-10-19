@@ -1,4 +1,4 @@
-package com.example.sportemple
+package com.bring_happiness.clichy_tennis
 
 import io.flutter.embedding.android.FlutterActivity
 

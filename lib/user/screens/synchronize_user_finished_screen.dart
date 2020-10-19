@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
+import '../../_extensions/string_extension.dart';
+import 'package:http/http.dart' as http;
 
 import '../arguments/synchronize_user_finished_arguments.dart';
 import '../../booking/screens/booking_home_screen.dart';
@@ -19,37 +22,32 @@ class SynchronizeUserFinishedScreen extends StatefulWidget {
 
 class _SynchronizeUserFinishedScreenState
     extends State<SynchronizeUserFinishedScreen> {
-  IO.Socket _socket;
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
-  @override
-  void initState() {
-    super.initState();
-    _socket = IO.io(DotEnv().env['SPORTEMPLE_API'], <String, dynamic>{
-      'transports': ['websocket'],
-    });
-  }
-
-  void _onValidatePressed(arguments) async {
-    _socket.emit('save-user-infos', {
-      'username': arguments.user.username,
-      'password': arguments.user.password,
+  void _onValidatePressed(SynchronizeUserFinishedArguments arguments) async {
+    final response =
+        await http.post('${DotEnv().env['SPORTEMPLE_API']}/users/infos', body: {
+      'username': arguments.user.username.btoa(),
+      'password': arguments.user.password.btoa(),
       'civility': arguments.user.civility,
       'firstname': arguments.user.firstname,
       'lastname': arguments.user.lastname,
       'birthdate': arguments.user.birthdate,
       'license': arguments.user.license,
       'ranking': arguments.user.ranking,
-      'partners': arguments.user.partners,
+      'partners': json.encode(arguments.user.partners),
     });
 
-    final SharedPreferences prefs = await _prefs;
-    prefs.setString('username', arguments.user.username);
-    prefs.setString('password', arguments.user.password);
+    if (response.statusCode == 200) {
+      final SharedPreferences prefs = await _prefs;
+      prefs.setString('username', arguments.user.username.btoa());
+      prefs.setString('password', arguments.user.password.btoa());
 
-    Route route = MaterialPageRoute(builder: (context) => BookingHomeScreen());
-    Navigator.of(context)
-        .pushAndRemoveUntil(route, (Route<dynamic> route) => false);
+      Route route =
+      MaterialPageRoute(builder: (context) => BookingHomeScreen());
+      Navigator.of(context)
+          .pushAndRemoveUntil(route, (Route<dynamic> route) => false);
+    }
   }
 
   @override
@@ -59,7 +57,7 @@ class _SynchronizeUserFinishedScreenState
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('C.S Clichy Tennis'),
+        title: const Text('Clichy Tennis'),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Padding(
