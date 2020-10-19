@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:sportemple/booking/widgets/booking_widget.dart';
 
 import '../../base/widgets/refresher_header_widget.dart';
@@ -25,7 +23,6 @@ class BookingHomeScreen extends StatefulWidget {
 }
 
 class _BookingHomeScreenState extends State<BookingHomeScreen> {
-  IO.Socket _socket;
   String _username;
   String _password;
   User _user;
@@ -54,10 +51,6 @@ class _BookingHomeScreenState extends State<BookingHomeScreen> {
           _bookings = bookings;
         });
       });
-    });
-
-    _socket = IO.io(DotEnv().env['SPORTEMPLE_API'], <String, dynamic>{
-      'transports': ['websocket'],
     });
   }
 

@@ -92,8 +92,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _onNormalLogin() async {
     final SharedPreferences prefs = await _prefs;
-    prefs.setString('username', _usernameInput.text);
-    prefs.setString('password', _passwordInput.text);
+    prefs.setString('username', _usernameInput.text.btoa());
+    prefs.setString('password', _passwordInput.text.btoa());
 
     Navigator.of(context).pushReplacementNamed(BookingHomeScreen.routeName);
   }
