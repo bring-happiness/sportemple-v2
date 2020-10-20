@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -32,10 +35,15 @@ class _CommuniquesScreenState extends State<CommuniquesScreen> {
   @override
   Widget build(BuildContext context) {
     double cWidth = MediaQuery.of(context).size.width * 0.8;
+    final String title = 'Annonces du club';
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Annonces du club'),
+      appBar: Platform.isIOS ? CupertinoNavigationBar(
+        middle: Text(
+          title
+        ),
+      ) : AppBar(
+        title: Text(title),
       ),
       body: SafeArea(
         child: Center(

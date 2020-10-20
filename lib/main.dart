@@ -1,7 +1,11 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:sportemple/base/screens/initial_screen.dart';
 import 'package:sportemple/booking/screens/booking_calendar_screen.dart';
 import 'package:sportemple/user/screens/choose_user_screen.dart';
 
@@ -20,36 +24,47 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  final Map<String, Widget Function(BuildContext)> routes = {
+    InitialScreen.routeName: (ctx) => InitialScreen(),
+    LoginScreen.routeName: (ctx) => LoginScreen(),
+    SynchronizeUserScreen.routeName: (ctx) => SynchronizeUserScreen(
+          arguments: ModalRoute.of(ctx).settings.arguments,
+        ),
+    SynchronizeUserFinishedScreen.routeName: (ctx) =>
+        SynchronizeUserFinishedScreen(),
+    BookingHomeScreen.routeName: (ctx) => BookingHomeScreen(),
+    CommuniquesScreen.routeName: (ctx) => CommuniquesScreen(),
+    ChooseUserScreen.routeName: (ctx) => ChooseUserScreen()
+  };
+  final onGenerateRoute = (RouteSettings settings) {
+    if (settings.name == BookingCalendarScreen.routeName) {
+      return MaterialPageRoute(
+          builder: (context) => BookingCalendarScreen(),
+          fullscreenDialog: true);
+    }
+
+    return null;
+  };
+  final title = 'Clichy Tennis';
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Clichy Tennis',
+    return /*Platform.isIOS ? CupertinoApp(
+      title: title,
+      routes: routes,
+      onGenerateRoute: onGenerateRoute,
+      theme: CupertinoThemeData(
+        primaryColor: Colors.blue,
+      ),
+    ) :*/ MaterialApp(
+      title: title,
+      routes: routes,
+      onGenerateRoute: onGenerateRoute,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      routes: {
-        LoginScreen.routeName: (ctx) => LoginScreen(),
-        SynchronizeUserScreen.routeName: (ctx) => SynchronizeUserScreen(
-          arguments: ModalRoute.of(ctx).settings.arguments,
-        ),
-        SynchronizeUserFinishedScreen.routeName: (ctx) =>
-            SynchronizeUserFinishedScreen(),
-        BookingHomeScreen.routeName: (ctx) => BookingHomeScreen(),
-        CommuniquesScreen.routeName: (ctx) => CommuniquesScreen(),
-        ChooseUserScreen.routeName: (ctx) => ChooseUserScreen()
-      },
-      onGenerateRoute: (settings) {
-        if (settings.name == BookingCalendarScreen.routeName) {
-          return MaterialPageRoute(
-            builder: (context) => BookingCalendarScreen(),
-            fullscreenDialog: true
-          );
-        }
-
-        return null;
-      },
     );
   }
 }

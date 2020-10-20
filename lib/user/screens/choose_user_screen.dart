@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -55,9 +58,16 @@ class _ChooseUserScreenState extends State<ChooseUserScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final String title = 'Choix du partenaire';
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Choix du partenaire'),
+      appBar: Platform.isIOS
+          ? CupertinoNavigationBar(
+        middle: Text(
+          title,
+        ),
+      ) : AppBar(
+        title: Text(title),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Padding(

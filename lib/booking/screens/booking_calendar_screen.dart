@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
@@ -162,9 +165,16 @@ class _BookingCalendarScreenState extends State<BookingCalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final String title = 'Choix du terrain';
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Choix du terrain'),
+      appBar: Platform.isIOS
+          ? CupertinoNavigationBar(
+        middle: Text(
+          title,
+        ),
+      ) : AppBar(
+        title: Text(title),
       ),
       body: SafeArea(
         bottom: false,

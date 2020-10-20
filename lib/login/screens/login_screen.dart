@@ -12,7 +12,7 @@ import '../../booking/screens/booking_home_screen.dart';
 import '../../user/screens/synchronize_user_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  static const String routeName = '/';
+  static const String routeName = '/login';
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -23,22 +23,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _usernameInput = TextEditingController();
   final _passwordInput = TextEditingController();
   bool _isConnecting = false;
-
-  @override
-  void initState() {
-    super.initState();
-// todo: must be on InitalScreen
-    SharedPreferences.getInstance().then((SharedPreferences prefs) {
-      String username = prefs.getString('username');
-      String password = prefs.getString('password');
-
-      if (username == null || password == null) {
-        return;
-      }
-
-      Navigator.of(context).pushReplacementNamed(BookingHomeScreen.routeName);
-    });
-  }
 
   void _onSubmitted(BuildContext context) async {
     setState(() {

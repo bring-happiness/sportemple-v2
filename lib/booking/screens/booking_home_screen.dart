@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -167,97 +170,131 @@ class _BookingHomeScreenState extends State<BookingHomeScreen> {
     Navigator.of(context).pushNamed(BookingCalendarScreen.routeName);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Clichy Tennis'),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _onAddPressed(context),
-        child: Icon(Icons.add),
-      ),
-      body: ModalProgressHUD(
-        inAsyncCall: _isBookingEdited,
-        child: Builder(
-          builder: (_context) => SmartRefresher(
-            enablePullDown: true,
-            header: RefresherHeaderWidget(),
-            controller: _refreshController,
-            onRefresh: _onRefresh,
-            child: SafeArea(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    UserProfileWidget(
-                      user: _user,
+  Widget _buildCommuniquesButton() {
+    final Widget child = Text(
+      'Voir les annonces',
+      style: TextStyle(fontSize: 17, color: Colors.white),
+    );
+    final Function onPressed = () {
+      Navigator.of(context).pushNamed(CommuniquesScreen.routeName);
+    };
+    final Color color = Theme.of(context).primaryColor;
+
+    return Platform.isIOS
+        ? CupertinoButton(
+            onPressed: onPressed,
+            child: child,
+            color: color,
+          )
+        : RaisedButton(
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            child: child,
+            onPressed: onPressed,
+            color: color,
+          );
+  }
+
+  Widget _buildBody() {
+    return ModalProgressHUD(
+      inAsyncCall: _isBookingEdited,
+      child: Builder(
+        builder: (_context) => SmartRefresher(
+          enablePullDown: true,
+          header: RefresherHeaderWidget(),
+          controller: _refreshController,
+          onRefresh: _onRefresh,
+          child: SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  UserProfileWidget(
+                    user: _user,
+                  ),
+                  _buildCommuniquesButton(),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 37, bottom: 0, left: 7),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Mes réservations',
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Color.fromRGBO(70, 70, 70, 1)),
+                        ),
+                      ],
                     ),
-                    RaisedButton(
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      child: Text(
-                        'Voir les annonces',
-                        style: TextStyle(fontSize: 17, color: Colors.white),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context)
-                            .pushNamed(CommuniquesScreen.routeName);
-                      },
-                      color: Theme.of(context).primaryColor,
+                  ),
+                  if (_bookings == null)
+                    BookingSkeleton(
+                      count: 2,
                     ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(top: 37, bottom: 0, left: 7),
-                      child: Row(
-                        children: [
-                          Text(
-                            'Mes réservations',
+                  if (_bookings != null && _bookings.length == 0)
+                    Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 17),
+                          child: Container(
+                            height: 170,
+                            width: 170,
+                            child: SvgPicture.asset(
+                                'assets/images/no-booking.svg'),
+                          ),
+                        ),
+                        Center(
+                          child: Text(
+                            'Aucune réservation',
                             style: TextStyle(
-                                fontSize: 18,
-                                color: Color.fromRGBO(70, 70, 70, 1)),
+                                fontSize: 18, color: Colors.grey[600]),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                    if (_bookings == null)
-                      BookingSkeleton(
-                        count: 2,
-                      ),
-                    if (_bookings != null && _bookings.length == 0)
-                      Column(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(vertical: 17),
-                            child: Container(
-                              height: 170,
-                              width: 170,
-                              child: SvgPicture.asset(
-                                  'assets/images/no-booking.svg'),
-                            ),
-                          ),
-                          Center(
-                            child: Text(
-                              'Aucune réservation',
-                              style: TextStyle(
-                                  fontSize: 18, color: Colors.grey[600]),
-                            ),
-                          ),
-                        ],
-                      ),
-                    if (_bookings != null && _bookings.length > 0)
-                      ..._bookings.map((Booking booking) {
-                        return BookingWidget(
-                          booking: booking,
-                          onDeletePressed: () =>
-                              _onDeletePressed(_context, booking),
-                        );
-                      }).toList(),
-                  ],
-                ),
+                  if (_bookings != null && _bookings.length > 0)
+                    ..._bookings.map((Booking booking) {
+                      return BookingWidget(
+                        booking: booking,
+                        onDeletePressed: () =>
+                            _onDeletePressed(_context, booking),
+                      );
+                    }).toList(),
+                ],
               ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final String title = 'Clichy Tennis';
+
+    return Scaffold(
+      appBar: Platform.isIOS
+          ? CupertinoNavigationBar(
+              middle: Text(
+                title,
+              ),
+              trailing: GestureDetector(
+                child: Icon(
+                  CupertinoIcons.add,
+                  size: 30,
+                  color: Theme.of(context).primaryColor,
+                ),
+                onTap: () => _onAddPressed(context),
+              ),
+            )
+          : AppBar(
+              title: Text(title),
+            ),
+      floatingActionButton: Platform.isIOS
+          ? Container()
+          : FloatingActionButton(
+              onPressed: () => _onAddPressed(context),
+              child: Icon(Icons.add),
+            ),
+      body: _buildBody(),
     );
   }
 }

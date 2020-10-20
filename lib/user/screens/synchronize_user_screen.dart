@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -95,28 +97,38 @@ class _SynchronizeUserScreenState extends State<SynchronizeUserScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final String title = 'Clichy Tennis';
+
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: const Text('Clichy Tennis'),
-      ),
-      body: !_isGettingInfos ? Container() : SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Padding(
-                padding: const EdgeInsets.all(27.0),
-                child: const CircularProgressIndicator(),
+      appBar: Platform.isIOS
+          ? CupertinoNavigationBar(
+              middle: Text(title),
+            )
+          : AppBar(
+              title: Text(title),
+            ),
+      body: !_isGettingInfos
+          ? Container()
+          : SafeArea(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(27.0),
+                      child: Platform.isIOS
+                          ? CupertinoActivityIndicator()
+                          : const CircularProgressIndicator(),
+                    ),
+                    const Text(
+                      'Récupération des données en cours...',
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                  ],
+                ),
               ),
-              const Text(
-                'Récupération des données en cours...',
-                style: const TextStyle(fontSize: 20),
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }
