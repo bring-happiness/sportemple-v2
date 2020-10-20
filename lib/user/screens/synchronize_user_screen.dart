@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:sportemple/connectivity/widgets/connectivity_widget.dart';
 import '../../_extensions/string_extension.dart';
 
 import '../arguments/synchronize_user_arguments.dart';
@@ -108,27 +109,29 @@ class _SynchronizeUserScreenState extends State<SynchronizeUserScreen> {
           : AppBar(
               title: Text(title),
             ),
-      body: !_isGettingInfos
-          ? Container()
-          : SafeArea(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(27.0),
-                      child: Platform.isIOS
-                          ? CupertinoActivityIndicator()
-                          : const CircularProgressIndicator(),
-                    ),
-                    const Text(
-                      'Récupération des données en cours...',
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                  ],
+      body: ConnectivityWidget(
+        child: !_isGettingInfos
+            ? Container()
+            : SafeArea(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(27.0),
+                  child: Platform.isIOS
+                      ? CupertinoActivityIndicator()
+                      : const CircularProgressIndicator(),
                 ),
-              ),
+                const Text(
+                  'Récupération des données en cours...',
+                  style: const TextStyle(fontSize: 20),
+                ),
+              ],
             ),
+          ),
+        ),
+      )
     );
   }
 }

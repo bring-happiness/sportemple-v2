@@ -7,6 +7,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sportemple/booking/widgets/booking_widget.dart';
+import 'package:sportemple/connectivity/widgets/connectivity_widget.dart';
 
 import '../../base/widgets/refresher_header_widget.dart';
 import '../screens/booking_calendar_screen.dart';
@@ -148,7 +149,7 @@ class _BookingHomeScreenState extends State<BookingHomeScreen> {
           children: [
             Expanded(
               child: Text(
-                'Vous ne pouvez pas supprimer cette réservation car vous n\êtes pas le propriétaire',
+                'Impossible de supprimer cette réservation car vous n\êtes pas le propriétaire',
                 style: TextStyle(
                   fontSize: 15,
                 ),
@@ -195,69 +196,72 @@ class _BookingHomeScreenState extends State<BookingHomeScreen> {
   }
 
   Widget _buildBody() {
-    return ModalProgressHUD(
-      inAsyncCall: _isBookingEdited,
-      child: Builder(
-        builder: (_context) => SmartRefresher(
-          enablePullDown: true,
-          header: RefresherHeaderWidget(),
-          controller: _refreshController,
-          onRefresh: _onRefresh,
-          child: SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  UserProfileWidget(
-                    user: _user,
-                  ),
-                  _buildCommuniquesButton(),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 37, bottom: 0, left: 7),
-                    child: Row(
-                      children: [
-                        Text(
-                          'Mes réservations',
-                          style: TextStyle(
-                              fontSize: 18,
-                              color: Color.fromRGBO(70, 70, 70, 1)),
-                        ),
-                      ],
+    return ConnectivityWidget(
+      child: ModalProgressHUD(
+        inAsyncCall: _isBookingEdited,
+        child: Builder(
+          builder: (_context) => SmartRefresher(
+            enablePullDown: true,
+            header: RefresherHeaderWidget(),
+            controller: _refreshController,
+            onRefresh: _onRefresh,
+            child: SafeArea(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    UserProfileWidget(
+                      user: _user,
                     ),
-                  ),
-                  if (_bookings == null)
-                    BookingSkeleton(
-                      count: 2,
-                    ),
-                  if (_bookings != null && _bookings.length == 0)
-                    Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: 17),
-                          child: Container(
-                            height: 170,
-                            width: 170,
-                            child: SvgPicture.asset(
-                                'assets/images/no-booking.svg'),
-                          ),
-                        ),
-                        Center(
-                          child: Text(
-                            'Aucune réservation',
+                    _buildCommuniquesButton(),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(top: 37, bottom: 0, left: 7),
+                      child: Row(
+                        children: [
+                          Text(
+                            'Mes réservations',
                             style: TextStyle(
-                                fontSize: 18, color: Colors.grey[600]),
+                                fontSize: 18,
+                                color: Color.fromRGBO(70, 70, 70, 1)),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  if (_bookings != null && _bookings.length > 0)
-                    ..._bookings.map((Booking booking) {
-                      return BookingWidget(
-                        booking: booking,
-                        onDeletePressed: () =>
-                            _onDeletePressed(_context, booking),
-                      );
-                    }).toList(),
-                ],
+                    if (_bookings == null)
+                      BookingSkeleton(
+                        count: 2,
+                      ),
+                    if (_bookings != null && _bookings.length == 0)
+                      Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 17),
+                            child: Container(
+                              height: 170,
+                              width: 170,
+                              child: SvgPicture.asset(
+                                  'assets/images/no-booking.svg'),
+                            ),
+                          ),
+                          Center(
+                            child: Text(
+                              'Aucune réservation',
+                              style: TextStyle(
+                                  fontSize: 18, color: Colors.grey[600]),
+                            ),
+                          ),
+                        ],
+                      ),
+                    if (_bookings != null && _bookings.length > 0)
+                      ..._bookings.map((Booking booking) {
+                        return BookingWidget(
+                          booking: booking,
+                          onDeletePressed: () =>
+                              _onDeletePressed(_context, booking),
+                        );
+                      }).toList(),
+                  ],
+                ),
               ),
             ),
           ),
@@ -271,30 +275,33 @@ class _BookingHomeScreenState extends State<BookingHomeScreen> {
     final String title = 'Clichy Tennis';
 
     return Scaffold(
-      appBar: Platform.isIOS
-          ? CupertinoNavigationBar(
-              middle: Text(
-                title,
-              ),
-              trailing: GestureDetector(
-                child: Icon(
-                  CupertinoIcons.add,
-                  size: 30,
-                  color: Theme.of(context).primaryColor,
+        appBar: Platform.isIOS
+            ? CupertinoNavigationBar(
+                middle: Text(
+                  title,
                 ),
-                onTap: () => _onAddPressed(context),
+                trailing: GestureDetector(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Ajouter',
+                        style: TextStyle(color: Theme.of(context).primaryColor),
+                      ),
+                    ],
+                  ),
+                  onTap: () => _onAddPressed(context),
+                ),
+              )
+            : AppBar(
+                title: Text(title),
               ),
-            )
-          : AppBar(
-              title: Text(title),
-            ),
-      floatingActionButton: Platform.isIOS
-          ? Container()
-          : FloatingActionButton(
-              onPressed: () => _onAddPressed(context),
-              child: Icon(Icons.add),
-            ),
-      body: _buildBody(),
-    );
+        floatingActionButton: Platform.isIOS
+            ? Container()
+            : FloatingActionButton(
+                onPressed: () => _onAddPressed(context),
+                child: Icon(Icons.add),
+              ),
+        body: _buildBody());
   }
 }

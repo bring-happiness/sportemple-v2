@@ -7,6 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sportemple/connectivity/widgets/connectivity_widget.dart';
 import '../../_extensions/string_extension.dart';
 import 'package:http/http.dart' as http;
 
@@ -85,87 +86,89 @@ class _SynchronizeUserFinishedScreenState
           icon: Icon(Icons.check),
         ),
       ),
-      body: ModalProgressHUD(
-        inAsyncCall: _isSavingUserInfos,
-        child: SafeArea(
-          bottom: false,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 37.0),
-                  child: Container(
-                    height: 115,
-                    child: SvgPicture.asset(arguments.user.profileAssetName),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(11.0),
-                  child: Text(
-                    '${arguments.user.firstname} ${arguments.user.lastname}',
-                    style: TextStyle(
-                        fontSize: 23, color: Theme.of(context).primaryColor),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text(
-                      '${arguments.user.age} ans',
-                      style:
-                          const TextStyle(fontSize: 17, color: Colors.blueGrey),
+      body: ConnectivityWidget(
+        child: ModalProgressHUD(
+          inAsyncCall: _isSavingUserInfos,
+          child: SafeArea(
+            bottom: false,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 37.0),
+                    child: Container(
+                      height: 115,
+                      child: SvgPicture.asset(arguments.user.profileAssetName),
                     ),
-                    Text(
-                      arguments.user.license,
-                      style:
-                          const TextStyle(fontSize: 17, color: Colors.blueGrey),
-                    )
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(47),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(11.0),
+                    child: Text(
+                      '${arguments.user.firstname} ${arguments.user.lastname}',
+                      style: TextStyle(
+                          fontSize: 23, color: Theme.of(context).primaryColor),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      const Text(
-                        'Classé ',
-                        style: const TextStyle(fontSize: 20),
+                      Text(
+                        '${arguments.user.age} ans',
+                        style:
+                            const TextStyle(fontSize: 17, color: Colors.blueGrey),
                       ),
-                      UserRankingWidget(
-                        ranking: arguments.user.ranking,
-                      ),
+                      Text(
+                        arguments.user.license,
+                        style:
+                            const TextStyle(fontSize: 17, color: Colors.blueGrey),
+                      )
                     ],
                   ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 35, vertical: 0),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 7),
-                            child: const Text(
-                              'Partenaires',
-                              style: const TextStyle(fontSize: 17),
+                  Padding(
+                    padding: const EdgeInsets.all(47),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Classé ',
+                          style: const TextStyle(fontSize: 20),
+                        ),
+                        UserRankingWidget(
+                          ranking: arguments.user.ranking,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 35, vertical: 0),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 7),
+                              child: const Text(
+                                'Partenaires',
+                                style: const TextStyle(fontSize: 17),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      ...arguments.user.partners.map((partner) {
-                        return UserListItemWidget(
-                          partner: partner,
-                          profileAssetName: arguments.user.profileAssetName,
-                        );
-                      }).toList()
-                    ],
+                          ],
+                        ),
+                        ...arguments.user.partners.map((partner) {
+                          return UserListItemWidget(
+                            partner: partner,
+                            profileAssetName: arguments.user.profileAssetName,
+                          );
+                        }).toList()
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  height: 85,
-                )
-              ],
+                  const SizedBox(
+                    height: 85,
+                  )
+                ],
+              ),
             ),
           ),
         ),

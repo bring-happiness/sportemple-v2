@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:sportemple/connectivity/widgets/connectivity_widget.dart';
 
 import '../../_extensions/string_extension.dart';
 import '../../court/models/court.dart';
@@ -176,147 +177,149 @@ class _BookingCalendarScreenState extends State<BookingCalendarScreen> {
       ) : AppBar(
         title: Text(title),
       ),
-      body: SafeArea(
-        bottom: false,
-        child: Stack(
-          children: [
-            PageView.builder(
-              controller: _pageController,
-              onPageChanged: (int page) {
-                if (_isPageViewChangeProgrammatically) {
-                  _isPageViewChangeProgrammatically = false;
-                  return;
-                }
+      body: ConnectivityWidget(
+        child: SafeArea(
+          bottom: false,
+          child: Stack(
+            children: [
+              PageView.builder(
+                controller: _pageController,
+                onPageChanged: (int page) {
+                  if (_isPageViewChangeProgrammatically) {
+                    _isPageViewChangeProgrammatically = false;
+                    return;
+                  }
 
-                if (page > _pageController.page) {
-                  _incrementCurrentDay();
-                } else {
-                  _decrementCurrentDay();
-                }
-              },
-              itemBuilder: (context, position) {
-                final _bookingSlots = bookingSlots
-                    .where((BookingSlot _bookingSlot) =>
-                        _bookingSlot.dateTime ==
-                        today.add(Duration(days: position)))
-                    .toList();
+                  if (page > _pageController.page) {
+                    _incrementCurrentDay();
+                  } else {
+                    _decrementCurrentDay();
+                  }
+                },
+                itemBuilder: (context, position) {
+                  final _bookingSlots = bookingSlots
+                      .where((BookingSlot _bookingSlot) =>
+                          _bookingSlot.dateTime ==
+                          today.add(Duration(days: position)))
+                      .toList();
 
-                return Container(
-                  padding: const EdgeInsets.only(
-                    top: 50,
-                    left: 17,
-                    right: 17,
-                  ),
-                  child: ListView.builder(
-                    itemBuilder: (context, itemCount) {
-                      final BookingSlot bookingSlot =
-                          _bookingSlots[itemCount];
+                  return Container(
+                    padding: const EdgeInsets.only(
+                      top: 50,
+                      left: 17,
+                      right: 17,
+                    ),
+                    child: ListView.builder(
+                      itemBuilder: (context, itemCount) {
+                        final BookingSlot bookingSlot =
+                            _bookingSlots[itemCount];
 
-                      return Container(
-                        padding: const EdgeInsets.only(
-                          top: 8,
-                          bottom: 21,
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  bookingSlot.startTimeHumanized,
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: Theme.of(context).primaryColor),
-                                ),
-                                Expanded(
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        bookingSlot.numberOfCourtsHumanized
-                                            .toUpperCase(),
-                                        style: TextStyle(
-                                            fontSize: 13,
-                                            color: Colors.grey[500]),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 7,
-                            ),
-                            Container(
-                              width: double.infinity,
-                              child: Wrap(
+                        return Container(
+                          padding: const EdgeInsets.only(
+                            top: 8,
+                            bottom: 21,
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  ...bookingSlot.courts.map((_courtId) {
-                                    final Court _court = _getCourt(_courtId);
-
-                                    return BookingSlotWidget(
-                                      court: _court,
-                                      onCourtTapped: () => _onCourtTapped(context, bookingSlot, _court),
-                                    );
-                                  }).toList(),
+                                  Text(
+                                    bookingSlot.startTimeHumanized,
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: Theme.of(context).primaryColor),
+                                  ),
+                                  Expanded(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          bookingSlot.numberOfCourtsHumanized
+                                              .toUpperCase(),
+                                          style: TextStyle(
+                                              fontSize: 13,
+                                              color: Colors.grey[500]),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ],
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                    itemCount: _bookingSlots.length,
-                  ),
-                  //color: position % 2 == 0 ? Colors.pink : Colors.cyan,
-                );
-              },
-            ),
-            Positioned(
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        icon: Icon(
-                          Icons.chevron_left,
-                          size: 31,
-                        ),
-                        onPressed: canDecrement
-                            ? () => _decrementCurrentDay(
-                                  changePageView: true,
-                                )
-                            : null,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      Expanded(
-                        child: FlatButton(
-                          splashColor: Theme.of(context).primaryColor,
-                          child: Text(
-                            currentDayHumanized,
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.blueGrey,
-                            ),
+                              const SizedBox(
+                                height: 7,
+                              ),
+                              Container(
+                                width: double.infinity,
+                                child: Wrap(
+                                  children: [
+                                    ...bookingSlot.courts.map((_courtId) {
+                                      final Court _court = _getCourt(_courtId);
+
+                                      return BookingSlotWidget(
+                                        court: _court,
+                                        onCourtTapped: () => _onCourtTapped(context, bookingSlot, _court),
+                                      );
+                                    }).toList(),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                          onPressed: () => _onDatePressed(context),
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.chevron_right, size: 31),
-                        onPressed: () => _incrementCurrentDay(
-                          changePageView: true,
-                        ),
-                        color: Theme.of(context).primaryColor,
-                      )
-                    ],
-                  ),
-                ],
+                        );
+                      },
+                      itemCount: _bookingSlots.length,
+                    ),
+                    //color: position % 2 == 0 ? Colors.pink : Colors.cyan,
+                  );
+                },
               ),
-            )
-          ],
+              Positioned(
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            Icons.chevron_left,
+                            size: 31,
+                          ),
+                          onPressed: canDecrement
+                              ? () => _decrementCurrentDay(
+                                    changePageView: true,
+                                  )
+                              : null,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        Expanded(
+                          child: FlatButton(
+                            splashColor: Theme.of(context).primaryColor,
+                            child: Text(
+                              currentDayHumanized,
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.blueGrey,
+                              ),
+                            ),
+                            onPressed: () => _onDatePressed(context),
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.chevron_right, size: 31),
+                          onPressed: () => _incrementCurrentDay(
+                            changePageView: true,
+                          ),
+                          color: Theme.of(context).primaryColor,
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

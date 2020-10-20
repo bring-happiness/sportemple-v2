@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sportemple/connectivity/widgets/connectivity_widget.dart';
 
 import '../../booking/repository/booking_slot_repository.dart';
 import '../arguments/choose_user_arguments.dart';
@@ -110,47 +111,49 @@ class _ChooseUserScreenState extends State<ChooseUserScreen> {
           ),
         ),
       ),
-      body: ModalProgressHUD(
-        inAsyncCall: _isBooking,
-        child: Builder(
-          builder: (_context) => SafeArea(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  top: 17,
-                  bottom: 50,
-                ),
-                child: Column(
-                  children: [
-                    if (_user != null)
-                      ..._user.partners.map((partner) {
-                        return Card(
-                          child: InkWell(
-                            onTap: () => _onPartnerSelected(partner),
-                            splashColor: Theme.of(context).primaryColor,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: UserListItemWidget(
-                                    partner: partner,
-                                    profileAssetName: _user.profileAssetName,
-                                  ),
-                                ),
-                                if (_isPartnerSelected(partner))
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 7),
-                                    child: Icon(
-                                      Icons.check,
-                                      color: Theme.of(context).primaryColor,
+      body: ConnectivityWidget(
+        child: ModalProgressHUD(
+          inAsyncCall: _isBooking,
+          child: Builder(
+            builder: (_context) => SafeArea(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    top: 17,
+                    bottom: 50,
+                  ),
+                  child: Column(
+                    children: [
+                      if (_user != null)
+                        ..._user.partners.map((partner) {
+                          return Card(
+                            child: InkWell(
+                              onTap: () => _onPartnerSelected(partner),
+                              splashColor: Theme.of(context).primaryColor,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: UserListItemWidget(
+                                      partner: partner,
+                                      profileAssetName: _user.profileAssetName,
                                     ),
-                                  )
-                              ],
+                                  ),
+                                  if (_isPartnerSelected(partner))
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 7),
+                                      child: Icon(
+                                        Icons.check,
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                    )
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      }).toList()
-                  ],
+                          );
+                        }).toList()
+                    ],
+                  ),
                 ),
               ),
             ),
